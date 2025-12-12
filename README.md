@@ -1,34 +1,42 @@
-# 🌌 سلام! من مهندس پورحاجی هستم.
+<p align="center">
+  <img src="YOUR_HEADER_IMAGE_LINK" alt="Welcome to PourhajiDev's GitHub" />
+</p>
 
-### **✨ Full-Stack Developer & Computer Science Student ✨**
+# 🚀 Amirtaha Pourhaji - Full-Stack Developer & CS Student
 
-> 💻 علاقه‌مند به توسعه پلتفرم‌های مقیاس‌پذیر و معماری‌های مدرن.
-
----
-
-## 🛠️ Stack & Expertise
-
-[![My Skills](https://skillicons.dev/icons?i=react,nextjs,typescript,tailwind,nodejs,express,mongodb,postgres,python,git,docker,aws,linux)](https://PourhajiDeV.ir)
-
-* **Front-end:** React, Next.js, TypeScript, HTML, CSS, JavaScript
-* **Back-end:** Node.js, Express, Python (Django)
-* **Database:** MongoDB, PostgreSQL
-* **DevOps:** Docker, AWS (Lambda, S3)
-* **Concepts:** Clean Code, Scalable Architecture, CI/CD
+> ✨ Passionate about building modern, scalable platforms and clean architecture.
 
 ---
 
-## 📈 My GitHub Stats
+## 🛠️ My Tech Stack & Expertise
+
+[![My Skills](https://skillicons.dev/icons?i=react,nextjs,typescript,tailwind,nodejs,express,mongodb,postgres,python,django,git,docker,aws,vscode,linux)](https://PourhajiDeV.ir)
+
+| Role | Area | Core Tools |
+| :--- | :--- | :--- |
+| **Frontend** | Modern Web UI | React, Next.js, TypeScript |
+| **Backend** | API & Logic | Node.js (Express), Python (Django) |
+| **Data** | Persistence & Search | MongoDB, PostgreSQL, Elasticsearch |
+| **DevOps** | Automation & Hosting | Docker, AWS (Lambda, S3), CI/CD |
+
+---
+
+## 📊 My GitHub Stats
 
 <p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=YOUR_USERNAME&show_icons=true&theme=dark&rank_icon=github" alt="GitHub Stats" />
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=YOUR_USERNAME&theme=dark" alt="GitHub Streak" />
+  <img src="https://github-readme-stats.vercel.app/api?username=icherik&show_icons=true&theme=dark&rank_icon=github&hide_border=true&count_private=true" alt="GitHub Stats" />
+  <img src="https://github-readme-streak-stats.herokuapp.com/?user=icherik&theme=dark&hide_border=true" alt="GitHub Streak" />
 </p>
 
 ---
 
-## 🌐 Connect with Me
+## 🔗 Connect with Me
 
 * **Website:** [PourhajiDeV.ir](https://PourhajiDeV.ir)
-* **LinkedIn:** [![LinkedIn Badge](https://img.shields.io/badge/-LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](YOUR_LINKEDIN_URL) 
-* **Twitter/X:** [![Twitter Badge](https://img.shields.io/badge/-Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](YOUR_TWITTER_URL)
+* **Instagram:** [![Instagram Badge](https://img.shields.io/badge/-Instagram-%23E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://instagram.com/ilcherik) 
+
+---
+
+<p align="center">
+  <img src="https://komarev.com/ghpvc/?username=icherik&style=flat-square&color=blue" alt="Profile Views" />
+</p>
