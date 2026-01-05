@@ -24,8 +24,8 @@
 ## 📊 My GitHub Stats
 
 <p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=pourhajidev&show_icons=true&theme=dark&rank_icon=github&hide_border=true&count_private=true" alt="GitHub Stats" />
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=icherik&theme=dark&hide_border=true" alt="GitHub Streak" />
+  <img src="https://github-readme-stats.vercel.app/api?username=PourhajiDeV&show_icons=true&theme=dark&rank_icon=github&hide_border=true&count_private=true" alt="GitHub Stats" />
+  <img src="https://github-readme-stats.vercel.app/api?username=PourhajiDeV" alt="GitHub Streak" />
 </p>
 
 ---
