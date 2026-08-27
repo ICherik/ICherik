@@ -1,8 +1,17 @@
 "use client";
 import { motion } from "framer-motion";
-import { MessageSquare, Coffee, ArrowUpRight } from "lucide-react";
+import { MessageSquare, Coffee, Cpu, ArrowUpRight } from "lucide-react";
 
 const projectData = [
+  {
+    title: "Raya Bonyan Lotus",
+    type: "Industrial & Railway Systems",
+    descriptionFa: "وب‌سایت رسمی و پورتفولیوی تخصصی شرکت رایا بنیان لوتوس (مستقر در پارک علم و فناوری). پیاده‌سازی رابط کاربری مدرن صنعتی با پالت تم دوگانه، مدال کاتالوگ محصولات سخت‌افزاری/ریلی و انیمیشن‌های روان.",
+    descriptionEn: "Official corporate website and technical catalog for Raya Bonyan Lotus. Features an industrial responsive UI, full dark/light theme engine, modal-based product showcase, and smooth interactive reveals.",
+    icon: <Cpu className="text-orange-500" style={{ backgroundColor: "transparent" }} size={26} />,
+    tags: ["HTML5", "CSS3 / Custom Variables", "Vanilla JS", "Hardware & Rail Systems"],
+    link: "https://rbl.co.ir/"
+  },
   {
     title: "Dashaq Bot",
     type: "Advanced Telegram System",
@@ -31,7 +40,7 @@ export default function Projects({ dict, currentLang }) {
         <p className="text-xs sm:text-sm text-zinc-500 dark:text-zinc-400 font-medium" style={{ backgroundColor: "transparent" }}>{dict.projects.subtitle}</p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6 sm:gap-10" style={{ backgroundColor: "transparent" }}>
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8" style={{ backgroundColor: "transparent" }}>
         {projectData.map((project, idx) => (
           <motion.div
             key={idx}
