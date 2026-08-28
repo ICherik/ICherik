@@ -118,7 +118,25 @@
   "projects": {
     "title": "Recent Projects",
     "subtitle": "A showcase of my recent backend and frontend developments",
-    "liveBtn": "View Project"
+    "liveBtn": "View Project",
+    "items": [
+      {
+        "id": "rbl",
+        "title": "Raya Bonyan Lotus",
+        "type": "Industrial & Railway Systems",
+        "desc": "Official corporate website and technical catalog for Raya Bonyan Lotus. Features an industrial responsive UI, full dark/light theme engine, modal-based product showcase, and smooth interactive reveals.",
+        "tags": ["HTML5", "CSS3 / Custom Variables", "Vanilla JS", "Hardware & Rail Systems"],
+        "link": "https://rbl.co.ir/"
+      },
+      {
+        "id": "karimi",
+        "title": "Karimi Lounge",
+        "type": "Premium E-Menu Platform",
+        "desc": "Bespoke digital interaction menu platform deployed for Karimi Lounge at menu.karimilounge.com. Highly optimized for ultra-fast asset delivery, robust responsive mobile layouts, and premium glassmorphic components.",
+        "tags": ["PHP Core", "Vanilla JS", "HTML5", "CSS3"],
+        "link": "https://menu.karimilounge.com"
+      }
+    ]
   },
   "liveStatus": {
     "badge": "Live Presence & Metrics",
