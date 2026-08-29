@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import { GitCommit, Star, GitFork, BookOpen, ExternalLink } from "lucide-react";
 
 export default function LiveStatus({ dict }) {
   const githubUsername = "PourhajiDeV";
@@ -9,7 +10,8 @@ export default function LiveStatus({ dict }) {
   const lastfmApiKey = "b25b959554ed76058ac220b7b2e0a026";
 
   const [spotify, setSpotify] = useState(null);
-  const [github, setGithub] = useState({ repos: 17, followers: 4, stars: 1 });
+  const [github, setGithub] = useState({ repos: 17, followers: 4, stars: 1, forks: 0 });
+  const [languages, setLanguages] = useState([]);
   const [discordStatus, setDiscordStatus] = useState("offline");
   const [discordUser, setDiscordUser] = useState(null);
 
@@ -26,7 +28,7 @@ export default function LiveStatus({ dict }) {
           fetch(`https://api.lanyard.rest/v1/users/${discordId}`),
           fetch(`https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${lastfmUsername}&api_key=${lastfmApiKey}&format=json&limit=1`),
           fetch(`https://api.github.com/users/${githubUsername}`),
-          fetch(`https://api.github.com/users/${githubUsername}/repos?per_page=100`)
+          fetch(`https://api.github.com/users/${githubUsername}/repos?per_page=100&sort=updated`)
         ]);
 
         let hasLanyardSpotify = false;
@@ -98,20 +100,35 @@ export default function LiveStatus({ dict }) {
 
         if (githubUserRes.status === "fulfilled" && githubUserRes.value.ok) {
           const gUser = await githubUserRes.value.json();
-          if (gUser && gUser.public_repos !== undefined) {
-            let stars = 1;
-            if (githubReposRes.status === "fulfilled" && githubReposRes.value.ok) {
-              const gRepos = await githubReposRes.value.json();
-              if (Array.isArray(gRepos)) {
-                stars = gRepos.reduce((acc, r) => acc + (r.stargazers_count || 0), 0);
-              }
+          let stars = 0;
+          let forks = 0;
+          const langMap = {};
+
+          if (githubReposRes.status === "fulfilled" && githubReposRes.value.ok) {
+            const gRepos = await githubReposRes.value.json();
+            if (Array.isArray(gRepos)) {
+              gRepos.forEach(repo => {
+                stars += (repo.stargazers_count || 0);
+                forks += (repo.forks_count || 0);
+                if (repo.language) {
+                  langMap[repo.language] = (langMap[repo.language] || 0) + 1;
+                }
+              });
+
+              const topLangs = Object.entries(langMap)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 4)
+                .map(([name, count]) => ({ name, count }));
+              setLanguages(topLangs);
             }
-            setGithub({
-              repos: gUser.public_repos,
-              followers: gUser.followers,
-              stars: stars
-            });
           }
+
+          setGithub({
+            repos: gUser.public_repos ?? 17,
+            followers: gUser.followers ?? 4,
+            stars: stars || 1,
+            forks: forks
+          });
         }
       } catch (err) {
         console.error(err);
@@ -119,7 +136,7 @@ export default function LiveStatus({ dict }) {
     }
 
     fetchStats();
-    const interval = setInterval(fetchStats, 4000);
+    const interval = setInterval(fetchStats, 6000);
     return () => clearInterval(interval);
   }, []);
 
@@ -201,6 +218,7 @@ export default function LiveStatus({ dict }) {
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
         
+        {/* Spotify Card */}
         <div className="md:col-span-12 lg:col-span-6 flex flex-col justify-between p-6 sm:p-8 rounded-3xl bg-white/70 dark:bg-zinc-950/60 border border-zinc-200/80 dark:border-zinc-800/80 backdrop-blur-2xl shadow-xl relative overflow-hidden group hover:border-emerald-500/40 transition-all duration-500">
           <div className="absolute -right-20 -top-20 w-64 h-64 bg-emerald-500/10 dark:bg-emerald-500/15 rounded-full blur-3xl pointer-events-none opacity-60"></div>
           
@@ -219,7 +237,7 @@ export default function LiveStatus({ dict }) {
             <div className="flex items-center gap-2">
               <span className={`w-2.5 h-2.5 rounded-full ${spotify?.isPlaying ? "bg-emerald-500 animate-pulse shadow-[0_0_10px_#10B981]" : "bg-zinc-400 dark:bg-zinc-600"}`}></span>
               <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400">
-                {spotify?.isPlaying ? (spotify.isRealtime ? dict.liveStatus.spotify.listening : dict.liveStatus.spotify.recent) : dict.liveStatus.spotify.idleTitle}
+                {spotify?.isPlaying ? (spotify.isRealtime ? dict.liveStatus.spotify.listening : "Recently Played") : dict.liveStatus.spotify.idleTitle}
               </span>
             </div>
           </div>
@@ -332,6 +350,7 @@ export default function LiveStatus({ dict }) {
           )}
         </div>
 
+        {/* Identity Hub Card */}
         <div className="md:col-span-12 lg:col-span-6 flex flex-col justify-between p-6 sm:p-8 rounded-3xl bg-white/70 dark:bg-zinc-950/60 border border-zinc-200/80 dark:border-zinc-800/80 backdrop-blur-2xl shadow-xl relative overflow-hidden group hover:border-blue-500/40 transition-all duration-500">
           <div className="absolute -left-20 -top-20 w-64 h-64 bg-blue-500/10 dark:bg-blue-500/15 rounded-full blur-3xl pointer-events-none opacity-60"></div>
           
@@ -355,7 +374,7 @@ export default function LiveStatus({ dict }) {
             </div>
             <div className="flex flex-col min-w-0">
               <div className="flex items-center gap-2">
-                <span className="text-base font-black text-zinc-900 dark:text-white">
+                <span className="text-base font-black text-zinc-900 dark:text-white truncate">
                   {discordUser?.global_name || "Amirtaha Pourhaji Motabi"}
                 </span>
                 <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border ${statusBadge.color}`}>
@@ -369,7 +388,6 @@ export default function LiveStatus({ dict }) {
           </div>
 
           <div className="grid grid-cols-3 gap-3 relative z-10">
-            
             <a
               href="https://t.me/PourhajiDeV"
               target="_blank"
@@ -414,15 +432,16 @@ export default function LiveStatus({ dict }) {
               <span className="text-xs font-bold text-zinc-900 dark:text-white">دیسکورد</span>
               <span className="text-[10px] font-mono text-zinc-400 mt-0.5">@{discordUser?.username || "pourhajidev"}</span>
             </a>
-
           </div>
         </div>
 
+        {/* GitHub Analytics Pro Dashboard */}
         <div className="md:col-span-12 p-6 sm:p-8 rounded-3xl bg-white/70 dark:bg-zinc-950/60 border border-zinc-200/80 dark:border-zinc-800/80 backdrop-blur-2xl shadow-xl relative overflow-hidden group hover:border-amber-500/40 transition-all duration-500">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8 relative z-10">
+          
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 relative z-10">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-500">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <div className="w-10 h-10 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                   <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
                 </svg>
               </div>
@@ -440,19 +459,76 @@ export default function LiveStatus({ dict }) {
               href={`https://github.com/${githubUsername}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-xs font-bold px-4 py-2 rounded-full bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:scale-105 transition-transform"
+              className="inline-flex items-center gap-2 text-xs font-bold px-4 py-2.5 rounded-xl bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 hover:scale-105 active:scale-95 transition-all shadow-md"
             >
               <span>{dict.liveStatus.github.viewProfile}</span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <line x1="7" y1="17" x2="17" y2="7"></line>
-                <polyline points="7 7 17 7 17 17"></polyline>
-              </svg>
+              <ExternalLink size={14} />
             </a>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 relative z-10 mb-6">
-            <div className="lg:col-span-8 flex flex-col justify-between p-5 rounded-2xl bg-zinc-100/60 dark:bg-zinc-900/60 border border-zinc-200/60 dark:border-zinc-800/60 min-h-[220px]">
-              <div className="flex items-center justify-between mb-4">
+          {/* Core Metrics Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 mb-6 relative z-10">
+            <div className="p-4 rounded-2xl bg-zinc-100/70 dark:bg-zinc-900/70 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center shrink-0">
+                <BookOpen size={20} />
+              </div>
+              <div>
+                <span className="text-xl sm:text-2xl font-black text-zinc-900 dark:text-white font-mono block">
+                  {github.repos}
+                </span>
+                <span className="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">
+                  {dict.liveStatus.github.repos}
+                </span>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-zinc-100/70 dark:bg-zinc-900/70 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0">
+                <Star size={20} />
+              </div>
+              <div>
+                <span className="text-xl sm:text-2xl font-black text-zinc-900 dark:text-white font-mono block">
+                  {github.stars}
+                </span>
+                <span className="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">
+                  {dict.liveStatus.github.stars}
+                </span>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-zinc-100/70 dark:bg-zinc-900/70 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center shrink-0">
+                <GitFork size={20} />
+              </div>
+              <div>
+                <span className="text-xl sm:text-2xl font-black text-zinc-900 dark:text-white font-mono block">
+                  {github.forks}
+                </span>
+                <span className="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">
+                  Total Forks
+                </span>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-zinc-100/70 dark:bg-zinc-900/70 border border-zinc-200/60 dark:border-zinc-800/60 flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center shrink-0">
+                <GitCommit size={20} />
+              </div>
+              <div>
+                <span className="text-xl sm:text-2xl font-black text-zinc-900 dark:text-white font-mono block">
+                  {github.followers}
+                </span>
+                <span className="text-[11px] font-bold text-zinc-500 dark:text-zinc-400">
+                  {dict.liveStatus.github.followers}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Full Activity Graph Container */}
+          <div className="p-5 sm:p-6 rounded-2xl bg-zinc-100/60 dark:bg-zinc-900/60 border border-zinc-200/60 dark:border-zinc-800/60 relative z-10">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
                 <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200">
                   {dict.liveStatus.github.graphTitle}
                 </span>
@@ -460,59 +536,28 @@ export default function LiveStatus({ dict }) {
                   ● Real-Time
                 </span>
               </div>
-              <div className="w-full h-full min-h-[160px] flex items-center justify-center overflow-x-auto">
-                <img
-                  src={`https://ghchart.rshah.org/00DC82/${githubUsername}`}
-                  alt="GitHub Contribution Calendar"
-                  className="w-full min-w-[580px] h-auto object-contain brightness-90 contrast-125"
-                  loading="lazy"
-                />
-              </div>
+              
+              {languages.length > 0 && (
+                <div className="hidden sm:flex items-center gap-2">
+                  {languages.map(l => (
+                    <span key={l.name} className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-md bg-zinc-200/60 dark:bg-zinc-800/60 text-zinc-600 dark:text-zinc-300">
+                      {l.name}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
 
-            <div className="lg:col-span-4 flex flex-col items-center justify-center p-5 rounded-2xl bg-zinc-100/60 dark:bg-zinc-900/60 border border-zinc-200/60 dark:border-zinc-800/60 min-h-[220px]">
-              <span className="text-xs font-bold text-zinc-800 dark:text-zinc-200 mb-3 self-start">
-                Commit Streak
-              </span>
-              <div className="w-full flex-1 flex items-center justify-center">
-                <img
-                  src={`https://github-readme-streak-stats.herokuapp.com/?user=${githubUsername}&theme=dark&hide_border=true&background=00000000&ring=10B981&fire=10B981&currStreakNum=10B981&sideNums=A1A1AA&sideLabels=71717A&dates=71717A`}
-                  alt="GitHub Streak"
-                  className="w-full max-h-[150px] object-contain"
-                  loading="lazy"
-                />
-              </div>
+            <div className="w-full overflow-x-auto flex items-center justify-center py-2">
+              <img
+                src={`https://ghchart.rshah.org/3B82F6/${githubUsername}`}
+                alt="GitHub Activity Heatmap"
+                className="w-full min-w-[650px] h-auto object-contain dark:invert-[0.88] dark:hue-rotate-180 transition-all filter"
+                loading="lazy"
+              />
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-4 relative z-10">
-            <div className="p-4 rounded-2xl bg-zinc-100/80 dark:bg-zinc-900/80 border border-zinc-200/60 dark:border-zinc-800/60 flex flex-col items-center justify-center text-center">
-              <span className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white font-mono">
-                {github.repos}
-              </span>
-              <span className="text-xs text-zinc-500 dark:text-zinc-400 font-bold mt-1">
-                {dict.liveStatus.github.repos}
-              </span>
-            </div>
-
-            <div className="p-4 rounded-2xl bg-zinc-100/80 dark:bg-zinc-900/80 border border-zinc-200/60 dark:border-zinc-800/60 flex flex-col items-center justify-center text-center">
-              <span className="text-2xl sm:text-3xl font-black text-amber-500 font-mono">
-                {github.followers}
-              </span>
-              <span className="text-xs text-zinc-500 dark:text-zinc-400 font-bold mt-1">
-                Followers
-              </span>
-            </div>
-
-            <div className="p-4 rounded-2xl bg-zinc-100/80 dark:bg-zinc-900/80 border border-zinc-200/60 dark:border-zinc-800/60 flex flex-col items-center justify-center text-center">
-              <span className="text-2xl sm:text-3xl font-black text-emerald-500 font-mono">
-                {github.stars}
-              </span>
-              <span className="text-xs text-zinc-500 dark:text-zinc-400 font-bold mt-1">
-                Total Stars
-              </span>
-            </div>
-          </div>
         </div>
 
       </div>
