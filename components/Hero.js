@@ -1,7 +1,7 @@
 "use client";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
-import { Terminal, Shield, Code, Calendar, CheckCircle, Server } from "lucide-react";
+import { Terminal, Shield, Code, Calendar, CheckCircle, Server, Briefcase, ExternalLink } from "lucide-react";
 
 export default function Hero({ dict }) {
   const containerRef = useRef(null);
@@ -20,11 +20,14 @@ export default function Hero({ dict }) {
       >
         <div className="flex flex-col lg:flex-row-reverse items-center justify-between gap-12" style={{ backgroundColor: "transparent" }}>
           <div className="flex-1 space-y-6 text-center lg:text-right" style={{ backgroundColor: "transparent" }}>
+            
+            {/* Header Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-bold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
               <Code size={14} />
               <span>{dict.hero.badge}</span>
             </div>
 
+            {/* Title & Name */}
             <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-tight" style={{ backgroundColor: "transparent" }}>
               {dict.hero.greeting} <br className="hidden md:block" />
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-400 dark:via-indigo-400 dark:to-purple-400">
@@ -37,6 +40,7 @@ export default function Hero({ dict }) {
               )}
             </h1>
 
+            {/* Role & Spec */}
             <div className="space-y-1" style={{ backgroundColor: "transparent" }}>
               <p className="text-xl md:text-2xl font-extrabold text-zinc-800 dark:text-zinc-100 tracking-wide">
                 {dict.hero.role}
@@ -46,11 +50,49 @@ export default function Hero({ dict }) {
               </p>
             </div>
 
+            {/* Bio */}
             <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed text-sm md:text-base max-w-3xl font-normal" style={{ backgroundColor: "transparent" }}>
               {dict.hero.bio}
             </p>
+
+            {/* Current Active Teams / Work Section */}
+            {dict.hero.currentWork && (
+              <div className="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 text-xs sm:text-sm">
+                <div className="flex items-center gap-2 text-zinc-500 dark:text-zinc-400 font-bold">
+                  <span className="relative flex h-2.5 w-2.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                  </span>
+                  <span>{dict.hero.currentWork.label}</span>
+                </div>
+
+                <div className="flex flex-wrap items-center justify-center gap-2">
+                  <a
+                    href="https://digiineo.ir"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-500/10 hover:bg-purple-500/20 text-purple-600 dark:text-purple-400 border border-purple-500/20 font-bold transition-all hover:scale-105 active:scale-95 shadow-sm"
+                  >
+                    <span>{dict.hero.currentWork.digiineo}</span>
+                    <ExternalLink size={12} />
+                  </a>
+
+                  <a
+                    href="https://rbl.co.ir"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-orange-500/10 hover:bg-orange-500/20 text-orange-600 dark:text-orange-400 border border-orange-500/20 font-bold transition-all hover:scale-105 active:scale-95 shadow-sm"
+                  >
+                    <span>{dict.hero.currentWork.rbl}</span>
+                    <ExternalLink size={12} />
+                  </a>
+                </div>
+              </div>
+            )}
+
           </div>
 
+          {/* 3D Glass Badges */}
           <div className="flex flex-row lg:flex-col gap-4 justify-center w-full lg:w-auto" style={{ backgroundColor: "transparent" }}>
             <motion.div 
               whileHover={{ scale: 1.05, rotateY: -10, rotateX: 10 }}
@@ -72,6 +114,7 @@ export default function Hero({ dict }) {
           </div>
         </div>
 
+        {/* Metrics Row */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 border-t border-zinc-500/10 mt-12 pt-8" style={{ backgroundColor: "transparent" }}>
           <div style={{ backgroundColor: "rgba(255, 255, 255, 0.02)" }} className="flex items-center gap-4 p-4 rounded-2xl border border-zinc-500/5">
             <Calendar className="text-blue-500" size={24} />
